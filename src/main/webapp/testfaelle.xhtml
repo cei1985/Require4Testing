@@ -4,88 +4,206 @@
       xmlns:f="jakarta.faces.core">
 
 <h:head>
+
     <title>Require4Testing - Testfälle</title>
+
+    <h:outputStylesheet library="css"
+                        name="require4testing.css" />
+
 </h:head>
 
 <h:body>
 
-    <h1>Testfälle</h1>
+    <div class="page">
 
-    <h:form>
+        <!-- Kopfbereich -->
 
-        <h:panelGrid columns="2">
+        <header class="header">
 
-            <h:outputLabel for="anforderung" value="Anforderung:" />
-            <h:selectOneMenu id="anforderung"
-                             value="#{testfallBean.ausgewaehlteAnforderungsId}">
+            <h1 class="title">
+                Require4Testing
+            </h1>
 
-                <f:selectItems value="#{testfallBean.anforderungen}"
-                               var="anforderung"
-                               itemValue="#{anforderung.id}"
-                               itemLabel="#{anforderung.titel}" />
+            <div class="subtitle">
+                Organisation manueller Anwendertests
+            </div>
 
-                <f:ajax listener="#{testfallBean.ladeTestfaelle}"
-                        render="testfallTabelle" />
+        </header>
 
-            </h:selectOneMenu>
+        <!-- Navigation -->
 
-            <h:outputLabel for="titel" value="Titel:" />
-            <h:inputText id="titel"
-                         value="#{testfallBean.testfall.titel}"
-                         required="true" />
+        <nav class="navigation">
 
-            <h:outputLabel for="beschreibung" value="Beschreibung:" />
-            <h:inputTextarea id="beschreibung"
-                             value="#{testfallBean.testfall.beschreibung}"
-                             required="true"
-                             rows="5"
-                             cols="50" />
+            <a href="index.html"
+               class="nav-link">
+                Start
+            </a>
 
-        </h:panelGrid>
+            <h:link value="Anforderungen"
+                    outcome="anforderungen"
+                    styleClass="nav-link" />
 
-        <br />
+            <h:link value="Testfälle"
+                    outcome="testfaelle"
+                    styleClass="nav-link active" />
 
-        <h:commandButton value="Testfall speichern"
-                         action="#{testfallBean.speichern}">
-            <f:ajax execute="@form"
-                    render="@form testfallTabelle" />
-        </h:commandButton>
+            <h:link value="Testläufe"
+                    outcome="testlaeufe"
+                    styleClass="nav-link" />
 
-    </h:form>
+            <h:link value="Zuordnung"
+                    outcome="zuordnung"
+                    styleClass="nav-link" />
 
-    <hr />
+            <h:link value="Testergebnisse"
+                    outcome="testergebnisse"
+                    styleClass="nav-link" />
 
-    <h2>Testfälle der ausgewählten Anforderung</h2>
+        </nav>
 
-    <h:panelGroup id="testfallTabelle">
+        <!-- Inhaltsbereich -->
 
-        <h:dataTable value="#{testfallBean.testfaelle}"
-                     var="testfall"
-                     border="1">
+        <main class="content">
 
-            <h:column>
-                <f:facet name="header">ID</f:facet>
-                <h:outputText value="#{testfall.id}" />
-            </h:column>
+            <h2 class="page-heading">
+                Testfälle
+            </h2>
 
-            <h:column>
-                <f:facet name="header">Titel</f:facet>
-                <h:outputText value="#{testfall.titel}" />
-            </h:column>
+            <h:form>
 
-            <h:column>
-                <f:facet name="header">Beschreibung</f:facet>
-                <h:outputText value="#{testfall.beschreibung}" />
-            </h:column>
+                <div class="form-grid">
 
-            <h:column>
-                <f:facet name="header">Anforderung</f:facet>
-                <h:outputText value="#{testfall.anforderung.titel}" />
-            </h:column>
+                    <h:outputLabel
+                            for="anforderung"
+                            value="Anforderung:"
+                            styleClass="form-label" />
 
-        </h:dataTable>
+                    <h:selectOneMenu
+                            id="anforderung"
+                            value="#{testfallBean.ausgewaehlteAnforderungsId}"
+                            styleClass="form-field">
 
-    </h:panelGroup>
+                        <f:selectItems
+                                value="#{testfallBean.anforderungen}"
+                                var="anforderung"
+                                itemValue="#{anforderung.id}"
+                                itemLabel="#{anforderung.titel}" />
+
+                        <f:ajax
+                                listener="#{testfallBean.ladeTestfaelle}"
+                                render="testfallTabelle" />
+
+                    </h:selectOneMenu>
+
+                    <h:outputLabel
+                            for="titel"
+                            value="Titel:"
+                            styleClass="form-label" />
+
+                    <h:inputText
+                            id="titel"
+                            value="#{testfallBean.testfall.titel}"
+                            required="true"
+                            styleClass="form-field" />
+
+                    <h:outputLabel
+                            for="beschreibung"
+                            value="Beschreibung:"
+                            styleClass="form-label" />
+
+                    <h:inputTextarea
+                            id="beschreibung"
+                            value="#{testfallBean.testfall.beschreibung}"
+                            required="true"
+                            rows="6"
+                            styleClass="form-field" />
+
+                </div>
+
+                <br />
+
+                <h:messages
+                        styleClass="status" />
+
+                <br />
+
+                <h:commandButton
+                        value="Testfall speichern"
+                        action="#{testfallBean.speichern}"
+                        styleClass="button">
+
+                    <f:ajax
+                            execute="@form"
+                            render="@form testfallTabelle" />
+
+                </h:commandButton>
+
+            </h:form>
+
+            <br />
+
+            <h2 class="page-heading">
+                Testfälle der ausgewählten Anforderung
+            </h2>
+
+            <h:panelGroup id="testfallTabelle">
+
+                <h:dataTable
+                        value="#{testfallBean.testfaelle}"
+                        var="testfall"
+                        styleClass="data-table">
+
+                    <h:column>
+
+                        <f:facet name="header">
+                            ID
+                        </f:facet>
+
+                        <h:outputText
+                                value="#{testfall.id}" />
+
+                    </h:column>
+
+                    <h:column>
+
+                        <f:facet name="header">
+                            Titel
+                        </f:facet>
+
+                        <h:outputText
+                                value="#{testfall.titel}" />
+
+                    </h:column>
+
+                    <h:column>
+
+                        <f:facet name="header">
+                            Beschreibung
+                        </f:facet>
+
+                        <h:outputText
+                                value="#{testfall.beschreibung}" />
+
+                    </h:column>
+
+                    <h:column>
+
+                        <f:facet name="header">
+                            Anforderung
+                        </f:facet>
+
+                        <h:outputText
+                                value="#{testfall.anforderung.titel}" />
+
+                    </h:column>
+
+                </h:dataTable>
+
+            </h:panelGroup>
+
+        </main>
+
+    </div>
 
 </h:body>
 
