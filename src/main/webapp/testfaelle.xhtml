@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+
+<h:head>
+    <title>Require4Testing - Testfälle</title>
+</h:head>
+
+<h:body>
+
+    <h1>Testfälle</h1>
+
+    <h:form>
+
+        <h:panelGrid columns="2">
+
+            <h:outputLabel for="anforderung" value="Anforderung:" />
+            <h:selectOneMenu id="anforderung"
+                             value="#{testfallBean.ausgewaehlteAnforderungsId}">
+
+                <f:selectItems value="#{testfallBean.anforderungen}"
+                               var="anforderung"
+                               itemValue="#{anforderung.id}"
+                               itemLabel="#{anforderung.titel}" />
+
+                <f:ajax listener="#{testfallBean.ladeTestfaelle}"
+                        render="testfallTabelle" />
+
+            </h:selectOneMenu>
+
+            <h:outputLabel for="titel" value="Titel:" />
+            <h:inputText id="titel"
+                         value="#{testfallBean.testfall.titel}"
+                         required="true" />
+
+            <h:outputLabel for="beschreibung" value="Beschreibung:" />
+            <h:inputTextarea id="beschreibung"
+                             value="#{testfallBean.testfall.beschreibung}"
+                             required="true"
+                             rows="5"
+                             cols="50" />
+
+        </h:panelGrid>
+
+        <br />
+
+        <h:commandButton value="Testfall speichern"
+                         action="#{testfallBean.speichern}">
+            <f:ajax execute="@form"
+                    render="@form testfallTabelle" />
+        </h:commandButton>
+
+    </h:form>
+
+    <hr />
+
+    <h2>Testfälle der ausgewählten Anforderung</h2>
+
+    <h:panelGroup id="testfallTabelle">
+
+        <h:dataTable value="#{testfallBean.testfaelle}"
+                     var="testfall"
+                     border="1">
+
+            <h:column>
+                <f:facet name="header">ID</f:facet>
+                <h:outputText value="#{testfall.id}" />
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Titel</f:facet>
+                <h:outputText value="#{testfall.titel}" />
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Beschreibung</f:facet>
+                <h:outputText value="#{testfall.beschreibung}" />
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Anforderung</f:facet>
+                <h:outputText value="#{testfall.anforderung.titel}" />
+            </h:column>
+
+        </h:dataTable>
+
+    </h:panelGroup>
+
+</h:body>
+
+</html>

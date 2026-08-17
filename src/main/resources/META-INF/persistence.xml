@@ -10,6 +10,7 @@
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
     <class>de.require4testing.model.Anforderung</class>
+    <class>de.require4testing.model.Testfall</class>
 
     <properties>
     <property name="jakarta.persistence.jdbc.driver"
