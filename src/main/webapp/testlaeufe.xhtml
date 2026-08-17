@@ -10,7 +10,7 @@
 
 <h:body>
 
-    <h1>Testläufe</h1>
+    <h1>Testlauf anlegen</h1>
 
     <h:form>
 
@@ -18,12 +18,12 @@
 
             <h:outputLabel for="bezeichnung" value="Bezeichnung:" />
             <h:inputText id="bezeichnung"
-                         value="#{testlaufBean.bezeichnung}"
+                         value="#{testlaufBean.testlauf.bezeichnung}"
                          required="true" />
 
             <h:outputLabel for="datum" value="Datum:" />
             <h:inputText id="datum"
-                         value="#{testlaufBean.datum}"
+                         value="#{testlaufBean.testlauf.datum}"
                          required="true"
                          a:type="date">
                 <f:convertDateTime type="localDate"
@@ -38,34 +38,6 @@
                          action="#{testlaufBean.speichern}" />
 
     </h:form>
-
-    <hr />
-
-    <h2>Gespeicherte Testläufe</h2>
-
-    <h:dataTable value="#{testlaufBean.testlaeufe}"
-                 var="testlauf"
-                 border="1">
-
-        <h:column>
-            <f:facet name="header">ID</f:facet>
-            <h:outputText value="#{testlauf.id}" />
-        </h:column>
-
-        <h:column>
-            <f:facet name="header">Bezeichnung</f:facet>
-            <h:outputText value="#{testlauf.bezeichnung}" />
-        </h:column>
-
-        <h:column>
-            <f:facet name="header">Datum</f:facet>
-            <h:outputText value="#{testlauf.datum}">
-                <f:convertDateTime type="localDate"
-                                   pattern="dd.MM.yyyy" />
-            </h:outputText>
-        </h:column>
-
-    </h:dataTable>
 
 </h:body>
 

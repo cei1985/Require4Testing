@@ -2,6 +2,7 @@ package de.require4testing.dao;
 
 import java.util.List;
 
+import de.require4testing.model.Tester;
 import de.require4testing.model.Testlauf;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -26,31 +27,17 @@ public class TestlaufDAO {
         }
     }
 
-    public List<Testlauf> findeAlle() {
-        EntityManager entityManager = EntityManagerProvider.createEntityManager();
-
-        try {
-            return entityManager
-                    .createQuery(
-                            "SELECT t FROM Testlauf t ORDER BY t.id",
-                            Testlauf.class)
-                    .getResultList();
-        } finally {
-            entityManager.close();
-        }
-    }
-
-    public List<Testlauf> findeAlleFuerTester(Long testerId) {
+    public List<Testlauf> findeAlleFuerTester(Tester tester) {
         EntityManager entityManager = EntityManagerProvider.createEntityManager();
 
         try {
             return entityManager
                     .createQuery(
                             "SELECT t FROM Testlauf t "
-                            + "WHERE t.tester.id = :testerId "
+                            + "WHERE t.tester = :tester "
                             + "ORDER BY t.id",
                             Testlauf.class)
-                    .setParameter("testerId", testerId)
+                    .setParameter("tester", tester)
                     .getResultList();
         } finally {
             entityManager.close();

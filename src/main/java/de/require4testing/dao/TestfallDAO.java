@@ -26,17 +26,14 @@ public class TestfallDAO {
         }
     }
 
-    public List<Testfall> findeAlleFuerAnforderung(Long anforderungsId) {
+    public List<Testfall> findeAlle() {
         EntityManager entityManager = EntityManagerProvider.createEntityManager();
 
         try {
             return entityManager
                     .createQuery(
-                            "SELECT t FROM Testfall t "
-                            + "WHERE t.anforderung.id = :anforderungsId "
-                            + "ORDER BY t.id",
+                            "SELECT t FROM Testfall t ORDER BY t.id",
                             Testfall.class)
-                    .setParameter("anforderungsId", anforderungsId)
                     .getResultList();
         } finally {
             entityManager.close();

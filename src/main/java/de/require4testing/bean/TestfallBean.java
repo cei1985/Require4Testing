@@ -1,6 +1,7 @@
 package de.require4testing.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.require4testing.dao.AnforderungDAO;
@@ -34,6 +35,8 @@ public class TestfallBean implements Serializable {
         if (!anforderungen.isEmpty()) {
             ausgewaehlteAnforderungsId = anforderungen.get(0).getId();
             ladeTestfaelle();
+        } else {
+            testfaelle = new ArrayList<>();
         }
     }
 
@@ -52,8 +55,18 @@ public class TestfallBean implements Serializable {
     }
 
     public void ladeTestfaelle() {
-        if (ausgewaehlteAnforderungsId != null) {
-            testfaelle = testfallDAO.findeAlleFuerAnforderung(ausgewaehlteAnforderungsId);
+        testfaelle = new ArrayList<>();
+
+        if (ausgewaehlteAnforderungsId == null) {
+            return;
+        }
+
+        for (Testfall eintrag : testfallDAO.findeAlle()) {
+            if (eintrag.getAnforderung() != null
+                    && ausgewaehlteAnforderungsId.equals(
+                            eintrag.getAnforderung().getId())) {
+                testfaelle.add(eintrag);
+            }
         }
     }
 

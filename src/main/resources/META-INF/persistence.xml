@@ -13,6 +13,7 @@
 <class>de.require4testing.model.Testfall</class>
 <class>de.require4testing.model.Tester</class>
 <class>de.require4testing.model.Testlauf</class>
+<class>de.require4testing.model.Testdurchfuehrung</class>
 
     <properties>
     <property name="jakarta.persistence.jdbc.driver"
