@@ -18,13 +18,13 @@
             <h:outputLabel for="tester" value="Tester:" />
 
             <h:selectOneMenu id="tester"
-                             value="#{testerBean.ausgewaehlteTesterId}">
+                             value="#{testerBean.tester.id}">
 
                 <f:selectItem itemLabel="Tester auswählen"
                               itemValue="#{null}"
                               noSelectionOption="true" />
 
-                <f:selectItems value="#{testerBean.testerListe}"
+                <f:selectItems value="#{testlaufBean.tester}"
                                var="tester"
                                itemValue="#{tester.id}"
                                itemLabel="#{tester.name}" />

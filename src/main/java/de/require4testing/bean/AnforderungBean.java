@@ -23,17 +23,13 @@ public class AnforderungBean implements Serializable {
     @PostConstruct
     public void init() {
         anforderung = new Anforderung();
-        ladeAnforderungen();
+        anforderungen = anforderungDAO.findeAlle();
     }
 
     public void speichern() {
         anforderungDAO.speichern(anforderung);
 
         anforderung = new Anforderung();
-        ladeAnforderungen();
-    }
-
-    public void ladeAnforderungen() {
         anforderungen = anforderungDAO.findeAlle();
     }
 
