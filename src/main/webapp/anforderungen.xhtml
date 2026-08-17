@@ -4,62 +4,163 @@
       xmlns:f="jakarta.faces.core">
 
 <h:head>
+
     <title>Require4Testing - Anforderungen</title>
+
+    <h:outputStylesheet library="css"
+                        name="require4testing.css" />
+
 </h:head>
 
 <h:body>
 
-    <h1>Anforderungen</h1>
+    <div class="page">
 
-    <h:form>
+        <!-- Kopfbereich -->
 
-        <h:panelGrid columns="2">
+        <header class="header">
 
-            <h:outputLabel for="titel" value="Titel:" />
-            <h:inputText id="titel"
-                         value="#{anforderungBean.anforderung.titel}"
-                         required="true" />
+            <h1 class="title">
+                Require4Testing
+            </h1>
 
-            <h:outputLabel for="beschreibung" value="Beschreibung:" />
-            <h:inputTextarea id="beschreibung"
-                             value="#{anforderungBean.anforderung.beschreibung}"
-                             required="true"
-                             rows="5"
-                             cols="50" />
+            <div class="subtitle">
+                Organisation manueller Anwendertests
+            </div>
 
-        </h:panelGrid>
+        </header>
 
-        <br />
+        <!-- Navigation -->
 
-        <h:commandButton value="Anforderung speichern"
-                         action="#{anforderungBean.speichern}" />
+        <nav class="navigation">
 
-    </h:form>
+            <a href="index.html"
+               class="nav-link">
+                Start
+            </a>
 
-    <hr />
+            <h:link value="Anforderungen"
+                    outcome="anforderungen"
+                    styleClass="nav-link active" />
 
-    <h2>Gespeicherte Anforderungen</h2>
+            <h:link value="Testfälle"
+                    outcome="testfaelle"
+                    styleClass="nav-link" />
 
-    <h:dataTable value="#{anforderungBean.anforderungen}"
-                 var="anforderung"
-                 border="1">
+            <h:link value="Testläufe"
+                    outcome="testlaeufe"
+                    styleClass="nav-link" />
 
-        <h:column>
-            <f:facet name="header">ID</f:facet>
-            <h:outputText value="#{anforderung.id}" />
-        </h:column>
+            <h:link value="Zuordnung"
+                    outcome="zuordnung"
+                    styleClass="nav-link" />
 
-        <h:column>
-            <f:facet name="header">Titel</f:facet>
-            <h:outputText value="#{anforderung.titel}" />
-        </h:column>
+            <h:link value="Testergebnisse"
+                    outcome="testergebnisse"
+                    styleClass="nav-link" />
 
-        <h:column>
-            <f:facet name="header">Beschreibung</f:facet>
-            <h:outputText value="#{anforderung.beschreibung}" />
-        </h:column>
+        </nav>
 
-    </h:dataTable>
+        <!-- Inhaltsbereich -->
+
+        <main class="content">
+
+            <h2 class="page-heading">
+                Anforderungen
+            </h2>
+
+            <h:form>
+
+                <div class="form-grid">
+
+                    <h:outputLabel
+                            for="titel"
+                            value="Bezeichnung / Titel:"
+                            styleClass="form-label" />
+
+                    <h:inputText
+                            id="titel"
+                            value="#{anforderungBean.anforderung.titel}"
+                            required="true"
+                            styleClass="form-field" />
+
+                    <h:outputLabel
+                            for="beschreibung"
+                            value="Beschreibung:"
+                            styleClass="form-label" />
+
+                    <h:inputTextarea
+                            id="beschreibung"
+                            value="#{anforderungBean.anforderung.beschreibung}"
+                            required="true"
+                            rows="6"
+                            styleClass="form-field" />
+
+                </div>
+
+                <br />
+
+                <h:messages
+                        styleClass="status" />
+
+                <br />
+
+                <h:commandButton
+                        value="Anforderung speichern"
+                        action="#{anforderungBean.speichern}"
+                        styleClass="button" />
+
+            </h:form>
+
+            <br />
+
+            <h2 class="page-heading">
+                Gespeicherte Anforderungen
+            </h2>
+
+            <h:dataTable
+                    value="#{anforderungBean.anforderungen}"
+                    var="anforderung"
+                    styleClass="data-table">
+
+                <h:column>
+
+                    <f:facet name="header">
+                        ID
+                    </f:facet>
+
+                    <h:outputText
+                            value="#{anforderung.id}" />
+
+                </h:column>
+
+                <h:column>
+
+                    <f:facet name="header">
+                        Titel
+                    </f:facet>
+
+                    <h:outputText
+                            value="#{anforderung.titel}" />
+
+                </h:column>
+
+                <h:column>
+
+                    <f:facet name="header">
+                        Beschreibung
+                    </f:facet>
+
+                    <h:outputText
+                            value="#{anforderung.beschreibung}" />
+
+                </h:column>
+
+            </h:dataTable>
+
+        </main>
+
+    </div>
 
 </h:body>
 
