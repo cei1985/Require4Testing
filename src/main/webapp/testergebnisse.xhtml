@@ -4,88 +4,199 @@
       xmlns:f="jakarta.faces.core">
 
 <h:head>
+
     <title>Require4Testing - Testergebnisse</title>
+
+    <h:outputStylesheet library="css"
+                        name="require4testing.css" />
+
 </h:head>
 
 <h:body>
 
-    <h1>Testergebnisse erfassen</h1>
+    <div class="page">
 
-    <h:form>
+        <!-- Kopfbereich -->
 
-        <h:panelGrid columns="2">
+        <header class="header">
 
-            <h:outputLabel for="tester" value="Tester:" />
+            <h1 class="title">
+                Require4Testing
+            </h1>
 
-            <h:selectOneMenu id="tester"
-                             value="#{testerBean.tester.id}">
+            <div class="subtitle">
+                Organisation manueller Anwendertests
+            </div>
 
-                <f:selectItem itemLabel="Tester auswählen"
-                              itemValue="#{null}"
-                              noSelectionOption="true" />
+        </header>
 
-                <f:selectItems value="#{testlaufBean.tester}"
-                               var="tester"
-                               itemValue="#{tester.id}"
-                               itemLabel="#{tester.name}" />
+        <!-- Navigation -->
 
-                <f:ajax listener="#{testerBean.ladeTestdurchfuehrungen}"
-                        render="durchfuehrungen" />
+        <nav class="navigation">
 
-            </h:selectOneMenu>
+            <a href="index.html"
+               class="nav-link">
+                Start
+            </a>
 
-        </h:panelGrid>
+            <h:link value="Anforderungen"
+                    outcome="anforderungen"
+                    styleClass="nav-link" />
 
-        <br />
+            <h:link value="Testfälle"
+                    outcome="testfaelle"
+                    styleClass="nav-link" />
 
-        <h:panelGroup id="durchfuehrungen">
+            <h:link value="Testläufe"
+                    outcome="testlaeufe"
+                    styleClass="nav-link" />
 
-            <h:dataTable value="#{testerBean.testdurchfuehrungen}"
-                         var="durchfuehrung"
-                         border="1">
+            <h:link value="Zuordnung"
+                    outcome="zuordnung"
+                    styleClass="nav-link" />
 
-                <h:column>
-                    <f:facet name="header">Testlauf</f:facet>
-                    <h:outputText value="#{durchfuehrung.testlauf.bezeichnung}" />
-                </h:column>
+            <h:link value="Testergebnisse"
+                    outcome="testergebnisse"
+                    styleClass="nav-link active" />
 
-                <h:column>
-                    <f:facet name="header">Datum</f:facet>
-                    <h:outputText value="#{durchfuehrung.testlauf.datum}">
-                        <f:convertDateTime type="localDate"
-                                           pattern="dd.MM.yyyy" />
-                    </h:outputText>
-                </h:column>
+        </nav>
 
-                <h:column>
-                    <f:facet name="header">Testfall</f:facet>
-                    <h:outputText value="#{durchfuehrung.testfall.titel}" />
-                </h:column>
+        <!-- Inhaltsbereich -->
 
-                <h:column>
-                    <f:facet name="header">Ergebnis</f:facet>
+        <main class="content">
 
-                    <h:selectOneMenu value="#{durchfuehrung.ergebnis}">
-                        <f:selectItem itemValue="OFFEN"
-                                      itemLabel="OFFEN" />
-                        <f:selectItem itemValue="BESTANDEN"
-                                      itemLabel="BESTANDEN" />
-                        <f:selectItem itemValue="FEHLGESCHLAGEN"
-                                      itemLabel="FEHLGESCHLAGEN" />
+            <h2 class="page-heading">
+                Testergebnisse erfassen
+            </h2>
+
+            <h:form>
+
+                <div class="form-grid">
+
+                    <h:outputLabel
+                            for="tester"
+                            value="Tester:"
+                            styleClass="form-label" />
+
+                    <h:selectOneMenu
+                            id="tester"
+                            value="#{testerBean.tester.id}"
+                            styleClass="form-field">
+
+                        <f:selectItem
+                                itemLabel="Tester auswählen"
+                                itemValue="#{null}"
+                                noSelectionOption="true" />
+
+                        <f:selectItems
+                                value="#{testlaufBean.tester}"
+                                var="tester"
+                                itemValue="#{tester.id}"
+                                itemLabel="#{tester.name}" />
+
+                        <f:ajax
+                                listener="#{testerBean.ladeTestdurchfuehrungen}"
+                                render="durchfuehrungen" />
+
                     </h:selectOneMenu>
 
-                </h:column>
+                </div>
 
-            </h:dataTable>
+                <br />
 
-            <br />
+                <h:messages
+                        styleClass="status" />
 
-            <h:commandButton value="Ergebnisse speichern"
-                             action="#{testerBean.ergebnisSpeichern}" />
+                <br />
 
-        </h:panelGroup>
+                <h:panelGroup id="durchfuehrungen">
 
-    </h:form>
+                    <h:dataTable
+                            value="#{testerBean.testdurchfuehrungen}"
+                            var="durchfuehrung"
+                            styleClass="data-table">
+
+                        <h:column>
+
+                            <f:facet name="header">
+                                Testlauf
+                            </f:facet>
+
+                            <h:outputText
+                                    value="#{durchfuehrung.testlauf.bezeichnung}" />
+
+                        </h:column>
+
+                        <h:column>
+
+                            <f:facet name="header">
+                                Datum
+                            </f:facet>
+
+                            <h:outputText
+                                    value="#{durchfuehrung.testlauf.datum}">
+
+                                <f:convertDateTime
+                                        type="localDate"
+                                        pattern="dd.MM.yyyy" />
+
+                            </h:outputText>
+
+                        </h:column>
+
+                        <h:column>
+
+                            <f:facet name="header">
+                                Testfall
+                            </f:facet>
+
+                            <h:outputText
+                                    value="#{durchfuehrung.testfall.titel}" />
+
+                        </h:column>
+
+                        <h:column>
+
+                            <f:facet name="header">
+                                Ergebnis
+                            </f:facet>
+
+                            <h:selectOneMenu
+                                    value="#{durchfuehrung.ergebnis}"
+                                    styleClass="form-field">
+
+                                <f:selectItem
+                                        itemValue="OFFEN"
+                                        itemLabel="OFFEN" />
+
+                                <f:selectItem
+                                        itemValue="BESTANDEN"
+                                        itemLabel="BESTANDEN" />
+
+                                <f:selectItem
+                                        itemValue="FEHLGESCHLAGEN"
+                                        itemLabel="FEHLGESCHLAGEN" />
+
+                            </h:selectOneMenu>
+
+                        </h:column>
+
+                    </h:dataTable>
+
+                    <br />
+
+                    <h:commandButton
+                            value="Ergebnisse speichern"
+                            action="#{testerBean.ergebnisSpeichern}"
+                            styleClass="button" />
+
+                </h:panelGroup>
+
+            </h:form>
+
+        </main>
+
+    </div>
 
 </h:body>
 

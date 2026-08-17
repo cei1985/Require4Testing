@@ -5,39 +5,123 @@
       xmlns:a="jakarta.faces.passthrough">
 
 <h:head>
+
     <title>Require4Testing - Testläufe</title>
+
+    <h:outputStylesheet library="css"
+                        name="require4testing.css" />
+
 </h:head>
 
 <h:body>
 
-    <h1>Testlauf anlegen</h1>
+    <div class="page">
 
-    <h:form>
+        <!-- Kopfbereich -->
 
-        <h:panelGrid columns="2">
+        <header class="header">
 
-            <h:outputLabel for="bezeichnung" value="Bezeichnung:" />
-            <h:inputText id="bezeichnung"
-                         value="#{testlaufBean.testlauf.bezeichnung}"
-                         required="true" />
+            <h1 class="title">
+                Require4Testing
+            </h1>
 
-            <h:outputLabel for="datum" value="Datum:" />
-            <h:inputText id="datum"
-                         value="#{testlaufBean.testlauf.datum}"
-                         required="true"
-                         a:type="date">
-                <f:convertDateTime type="localDate"
-                                   pattern="yyyy-MM-dd" />
-            </h:inputText>
+            <div class="subtitle">
+                Organisation manueller Anwendertests
+            </div>
 
-        </h:panelGrid>
+        </header>
 
-        <br />
+        <!-- Navigation -->
 
-        <h:commandButton value="Testlauf speichern"
-                         action="#{testlaufBean.speichern}" />
+        <nav class="navigation">
 
-    </h:form>
+            <a href="index.html"
+               class="nav-link">
+                Start
+            </a>
+
+            <h:link value="Anforderungen"
+                    outcome="anforderungen"
+                    styleClass="nav-link" />
+
+            <h:link value="Testfälle"
+                    outcome="testfaelle"
+                    styleClass="nav-link" />
+
+            <h:link value="Testläufe"
+                    outcome="testlaeufe"
+                    styleClass="nav-link active" />
+
+            <h:link value="Zuordnung"
+                    outcome="zuordnung"
+                    styleClass="nav-link" />
+
+            <h:link value="Testergebnisse"
+                    outcome="testergebnisse"
+                    styleClass="nav-link" />
+
+        </nav>
+
+        <!-- Inhaltsbereich -->
+
+        <main class="content">
+
+            <h2 class="page-heading">
+                Testlauf anlegen
+            </h2>
+
+            <h:form>
+
+                <div class="form-grid">
+
+                    <h:outputLabel
+                            for="bezeichnung"
+                            value="Bezeichnung:"
+                            styleClass="form-label" />
+
+                    <h:inputText
+                            id="bezeichnung"
+                            value="#{testlaufBean.testlauf.bezeichnung}"
+                            required="true"
+                            styleClass="form-field" />
+
+                    <h:outputLabel
+                            for="datum"
+                            value="Datum:"
+                            styleClass="form-label" />
+
+                    <h:inputText
+                            id="datum"
+                            value="#{testlaufBean.testlauf.datum}"
+                            required="true"
+                            styleClass="form-field"
+                            a:type="date">
+
+                        <f:convertDateTime
+                                type="localDate"
+                                pattern="yyyy-MM-dd" />
+
+                    </h:inputText>
+
+                </div>
+
+                <br />
+
+                <h:messages
+                        styleClass="status" />
+
+                <br />
+
+                <h:commandButton
+                        value="Testlauf speichern"
+                        action="#{testlaufBean.speichern}"
+                        styleClass="button" />
+
+            </h:form>
+
+        </main>
+
+    </div>
 
 </h:body>
 

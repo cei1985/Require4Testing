@@ -4,82 +4,164 @@
       xmlns:f="jakarta.faces.core">
 
 <h:head>
+
     <title>Require4Testing - Zuordnung</title>
+
+    <h:outputStylesheet library="css"
+                        name="require4testing.css" />
+
 </h:head>
 
 <h:body>
 
-    <h1>Testlauf zuordnen</h1>
+    <div class="page">
 
-    <h:form>
+        <!-- Kopfbereich -->
 
-        <h:panelGrid columns="2">
+        <header class="header">
 
-            <h:outputLabel for="testlauf"
-                           value="Testlauf:" />
+            <h1 class="title">
+                Require4Testing
+            </h1>
 
-            <h:selectOneMenu id="testlauf"
-                             value="#{testlaufBean.ausgewaehlterTestlaufId}"
-                             required="true">
+            <div class="subtitle">
+                Organisation manueller Anwendertests
+            </div>
 
-                <f:selectItem
-                        itemLabel="Testlauf auswählen"
-                        itemValue="#{null}"
-                        noSelectionOption="true" />
+        </header>
 
-                <f:selectItems
-                        value="#{testlaufBean.testlaeufe}"
-                        var="testlauf"
-                        itemValue="#{testlauf.id}"
-                        itemLabel="#{testlauf.bezeichnung}" />
+        <!-- Navigation -->
 
-            </h:selectOneMenu>
+        <nav class="navigation">
 
-            <h:outputLabel for="tester"
-                           value="Tester:" />
+            <a href="index.html"
+               class="nav-link">
+                Start
+            </a>
 
-            <h:selectOneMenu id="tester"
-                             value="#{testlaufBean.ausgewaehlteTesterId}"
-                             required="true">
+            <h:link value="Anforderungen"
+                    outcome="anforderungen"
+                    styleClass="nav-link" />
 
-                <f:selectItem
-                        itemLabel="Tester auswählen"
-                        itemValue="#{null}"
-                        noSelectionOption="true" />
+            <h:link value="Testfälle"
+                    outcome="testfaelle"
+                    styleClass="nav-link" />
 
-                <f:selectItems
-                        value="#{testlaufBean.tester}"
-                        var="tester"
-                        itemValue="#{tester.id}"
-                        itemLabel="#{tester.name}" />
+            <h:link value="Testläufe"
+                    outcome="testlaeufe"
+                    styleClass="nav-link" />
 
-            </h:selectOneMenu>
+            <h:link value="Zuordnung"
+                    outcome="zuordnung"
+                    styleClass="nav-link active" />
 
-            <h:outputLabel for="testfaelle"
-                           value="Testfälle:" />
+            <h:link value="Testergebnisse"
+                    outcome="testergebnisse"
+                    styleClass="nav-link" />
 
-            <h:selectManyCheckbox
-                    id="testfaelle"
-                    value="#{testlaufBean.ausgewaehlteTestfallIds}"
-                    layout="pageDirection">
+        </nav>
 
-                <f:selectItems
-                        value="#{testlaufBean.testfaelle}"
-                        var="testfall"
-                        itemValue="#{testfall.id}"
-                        itemLabel="#{testfall.titel}" />
+        <!-- Inhaltsbereich -->
 
-            </h:selectManyCheckbox>
+        <main class="content">
 
-        </h:panelGrid>
+            <h2 class="page-heading">
+                Testlauf zuordnen
+            </h2>
 
-        <br />
+            <h:form>
 
-        <h:commandButton
-                value="Zuordnung speichern"
-                action="#{testlaufBean.speichern}" />
+                <div class="form-grid">
 
-    </h:form>
+                    <h:outputLabel
+                            for="testlauf"
+                            value="Testlauf:"
+                            styleClass="form-label" />
+
+                    <h:selectOneMenu
+                            id="testlauf"
+                            value="#{testlaufBean.ausgewaehlterTestlaufId}"
+                            required="true"
+                            styleClass="form-field">
+
+                        <f:selectItem
+                                itemLabel="Testlauf auswählen"
+                                itemValue="#{null}"
+                                noSelectionOption="true" />
+
+                        <f:selectItems
+                                value="#{testlaufBean.testlaeufe}"
+                                var="testlauf"
+                                itemValue="#{testlauf.id}"
+                                itemLabel="#{testlauf.bezeichnung}" />
+
+                    </h:selectOneMenu>
+
+                    <h:outputLabel
+                            for="tester"
+                            value="Tester:"
+                            styleClass="form-label" />
+
+                    <h:selectOneMenu
+                            id="tester"
+                            value="#{testlaufBean.ausgewaehlteTesterId}"
+                            required="true"
+                            styleClass="form-field">
+
+                        <f:selectItem
+                                itemLabel="Tester auswählen"
+                                itemValue="#{null}"
+                                noSelectionOption="true" />
+
+                        <f:selectItems
+                                value="#{testlaufBean.tester}"
+                                var="tester"
+                                itemValue="#{tester.id}"
+                                itemLabel="#{tester.name}" />
+
+                    </h:selectOneMenu>
+
+                    <h:outputLabel
+                            for="testfaelle"
+                            value="Testfälle:"
+                            styleClass="form-label" />
+
+                    <div class="checkbox-group">
+
+                        <h:selectManyCheckbox
+                                id="testfaelle"
+                                value="#{testlaufBean.ausgewaehlteTestfallIds}"
+                                layout="pageDirection">
+
+                            <f:selectItems
+                                    value="#{testlaufBean.testfaelle}"
+                                    var="testfall"
+                                    itemValue="#{testfall.id}"
+                                    itemLabel="#{testfall.titel}" />
+
+                        </h:selectManyCheckbox>
+
+                    </div>
+
+                </div>
+
+                <br />
+
+                <h:messages
+                        styleClass="status" />
+
+                <br />
+
+                <h:commandButton
+                        value="Zuordnung speichern"
+                        action="#{testlaufBean.speichern}"
+                        styleClass="button" />
+
+            </h:form>
+
+        </main>
+
+    </div>
 
 </h:body>
 

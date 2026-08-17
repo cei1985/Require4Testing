@@ -230,3 +230,26 @@ body {
     margin-bottom: 0;
     line-height: 1.6;
 }
+
+/* ---------------------------------------------------------
+   Checkbox-Auswahl
+   --------------------------------------------------------- */
+
+.checkbox-group {
+    padding: 11px 12px;
+    border: 1px solid #d4d9d3;
+    background-color: #f8faf8;
+}
+
+.checkbox-group table {
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.checkbox-group td {
+    padding-right: 10px;
+}
+
+.checkbox-group label {
+    color: #292d2a;
+}
