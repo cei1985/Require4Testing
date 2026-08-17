@@ -1,0 +1,18 @@
+# Maven
+/target/
+
+# Eclipse Build
+/build/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Betriebssystem
+.DS_Store
+Thumbs.db
+
+# IDE / temporäre Dateien
+*.log
+*.tmp

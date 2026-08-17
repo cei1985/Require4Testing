@@ -1,0 +1,1 @@
+package de.require4testing.bean;
