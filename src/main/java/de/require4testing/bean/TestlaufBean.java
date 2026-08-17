@@ -24,9 +24,11 @@ public class TestlaufBean implements Serializable {
 
     private Testlauf testlauf;
 
+    private List<Testlauf> testlaeufe;
     private List<Tester> tester;
     private List<Testfall> testfaelle;
 
+    private Long ausgewaehlterTestlaufId;
     private Long ausgewaehlteTesterId;
     private List<Long> ausgewaehlteTestfallIds;
 
@@ -39,48 +41,93 @@ public class TestlaufBean implements Serializable {
     @PostConstruct
     public void init() {
         testlauf = new Testlauf();
+
+        testlaeufe = testlaufDAO.findeAlle();
         tester = testerDAO.findeAlle();
         testfaelle = testfallDAO.findeAlle();
+
         ausgewaehlteTestfallIds = new ArrayList<>();
     }
 
     public void speichern() {
-        Tester ausgewaehlterTester = findeAusgewaehltenTester();
 
-        if (ausgewaehlterTester == null) {
-            throw new IllegalStateException("Kein gültiger Tester ausgewählt.");
+        if (ausgewaehlterTestlaufId == null) {
+            throw new IllegalStateException(
+                    "Kein Testlauf ausgewählt.");
         }
 
-        testlauf.setTester(ausgewaehlterTester);
-        testlaufDAO.speichern(testlauf);
+        if (ausgewaehlteTesterId == null) {
+            throw new IllegalStateException(
+                    "Kein Tester ausgewählt.");
+        }
+
+        Testlauf ausgewaehlterTestlauf =
+                findeAusgewaehltenTestlauf();
+
+        Tester ausgewaehlterTester =
+                findeAusgewaehltenTester();
+
+        if (ausgewaehlterTestlauf == null) {
+            throw new IllegalStateException(
+                    "Kein gültiger Testlauf ausgewählt.");
+        }
+
+        if (ausgewaehlterTester == null) {
+            throw new IllegalStateException(
+                    "Kein gültiger Tester ausgewählt.");
+        }
+
+        ausgewaehlterTestlauf.setTester(ausgewaehlterTester);
+
+        testlauf = ausgewaehlterTestlauf;
 
         for (Long testfallId : ausgewaehlteTestfallIds) {
+
             Testfall testfall = findeTestfall(testfallId);
 
             if (testfall != null) {
+
                 Testdurchfuehrung testdurchfuehrung =
                         new Testdurchfuehrung();
 
-                testdurchfuehrung.setTestlauf(testlauf);
+                testdurchfuehrung.setTestlauf(ausgewaehlterTestlauf);
                 testdurchfuehrung.setTestfall(testfall);
                 testdurchfuehrung.setErgebnis("OFFEN");
 
-                testdurchfuehrungDAO.speichern(testdurchfuehrung);
+                testdurchfuehrungDAO.speichern(
+                        testdurchfuehrung);
             }
         }
 
         testlauf = new Testlauf();
+        ausgewaehlterTestlaufId = null;
         ausgewaehlteTesterId = null;
         ausgewaehlteTestfallIds = new ArrayList<>();
+
+        testlaeufe = testlaufDAO.findeAlle();
+    }
+
+    private Testlauf findeAusgewaehltenTestlauf() {
+
+        for (Testlauf eintrag : testlaeufe) {
+
+            if (ausgewaehlterTestlaufId.equals(
+                    eintrag.getId())) {
+
+                return eintrag;
+            }
+        }
+
+        return null;
     }
 
     private Tester findeAusgewaehltenTester() {
-        if (ausgewaehlteTesterId == null) {
-            return null;
-        }
 
         for (Tester eintrag : tester) {
-            if (ausgewaehlteTesterId.equals(eintrag.getId())) {
+
+            if (ausgewaehlteTesterId.equals(
+                    eintrag.getId())) {
+
                 return eintrag;
             }
         }
@@ -89,7 +136,9 @@ public class TestlaufBean implements Serializable {
     }
 
     private Testfall findeTestfall(Long testfallId) {
+
         for (Testfall testfall : testfaelle) {
+
             if (testfallId.equals(testfall.getId())) {
                 return testfall;
             }
@@ -104,6 +153,14 @@ public class TestlaufBean implements Serializable {
 
     public void setTestlauf(Testlauf testlauf) {
         this.testlauf = testlauf;
+    }
+
+    public List<Testlauf> getTestlaeufe() {
+        return testlaeufe;
+    }
+
+    public void setTestlaeufe(List<Testlauf> testlaeufe) {
+        this.testlaeufe = testlaeufe;
     }
 
     public List<Tester> getTester() {
@@ -122,19 +179,36 @@ public class TestlaufBean implements Serializable {
         this.testfaelle = testfaelle;
     }
 
+    public Long getAusgewaehlterTestlaufId() {
+        return ausgewaehlterTestlaufId;
+    }
+
+    public void setAusgewaehlterTestlaufId(
+            Long ausgewaehlterTestlaufId) {
+
+        this.ausgewaehlterTestlaufId =
+                ausgewaehlterTestlaufId;
+    }
+
     public Long getAusgewaehlteTesterId() {
         return ausgewaehlteTesterId;
     }
 
-    public void setAusgewaehlteTesterId(Long ausgewaehlteTesterId) {
-        this.ausgewaehlteTesterId = ausgewaehlteTesterId;
+    public void setAusgewaehlteTesterId(
+            Long ausgewaehlteTesterId) {
+
+        this.ausgewaehlteTesterId =
+                ausgewaehlteTesterId;
     }
 
     public List<Long> getAusgewaehlteTestfallIds() {
         return ausgewaehlteTestfallIds;
     }
 
-    public void setAusgewaehlteTestfallIds(List<Long> ausgewaehlteTestfallIds) {
-        this.ausgewaehlteTestfallIds = ausgewaehlteTestfallIds;
+    public void setAusgewaehlteTestfallIds(
+            List<Long> ausgewaehlteTestfallIds) {
+
+        this.ausgewaehlteTestfallIds =
+                ausgewaehlteTestfallIds;
     }
 }

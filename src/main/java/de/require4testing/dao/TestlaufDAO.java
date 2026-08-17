@@ -10,8 +10,11 @@ import jakarta.persistence.EntityTransaction;
 public class TestlaufDAO {
 
     public void speichern(Testlauf testlauf) {
-        EntityManager entityManager = EntityManagerProvider.createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager entityManager =
+                EntityManagerProvider.createEntityManager();
+
+        EntityTransaction transaction =
+                entityManager.getTransaction();
 
         try {
             transaction.begin();
@@ -27,8 +30,25 @@ public class TestlaufDAO {
         }
     }
 
+    public List<Testlauf> findeAlle() {
+        EntityManager entityManager =
+                EntityManagerProvider.createEntityManager();
+
+        try {
+            return entityManager
+                    .createQuery(
+                            "SELECT t FROM Testlauf t "
+                            + "ORDER BY t.id",
+                            Testlauf.class)
+                    .getResultList();
+        } finally {
+            entityManager.close();
+        }
+    }
+
     public List<Testlauf> findeAlleFuerTester(Tester tester) {
-        EntityManager entityManager = EntityManagerProvider.createEntityManager();
+        EntityManager entityManager =
+                EntityManagerProvider.createEntityManager();
 
         try {
             return entityManager
