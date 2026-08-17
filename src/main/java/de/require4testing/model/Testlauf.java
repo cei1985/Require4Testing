@@ -1,7 +1,8 @@
 package de.require4testing.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,9 +19,11 @@ public class Testlauf {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime startDatum;
+    @Column(nullable = false, length = 150)
+    private String bezeichnung;
 
-    private LocalDateTime endDatum;
+    @Column(nullable = false)
+    private LocalDate datum;
 
     @ManyToOne
     @JoinColumn(name = "tester_id")
@@ -37,20 +40,20 @@ public class Testlauf {
         this.id = id;
     }
 
-    public LocalDateTime getStartDatum() {
-        return startDatum;
+    public String getBezeichnung() {
+        return bezeichnung;
     }
 
-    public void setStartDatum(LocalDateTime startDatum) {
-        this.startDatum = startDatum;
+    public void setBezeichnung(String bezeichnung) {
+        this.bezeichnung = bezeichnung;
     }
 
-    public LocalDateTime getEndDatum() {
-        return endDatum;
+    public LocalDate getDatum() {
+        return datum;
     }
 
-    public void setEndDatum(LocalDateTime endDatum) {
-        this.endDatum = endDatum;
+    public void setDatum(LocalDate datum) {
+        this.datum = datum;
     }
 
     public Tester getTester() {

@@ -1,7 +1,7 @@
 package de.require4testing.bean;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import de.require4testing.dao.TestlaufDAO;
@@ -54,19 +54,19 @@ public class TestlaufBean implements Serializable {
         this.testlaeufe = testlaeufe;
     }
 
-    public LocalDateTime getStartDatum() {
-        return testlauf.getStartDatum();
+    public String getBezeichnung() {
+        return testlauf.getBezeichnung();
     }
 
-    public void setStartDatum(LocalDateTime startDatum) {
-        testlauf.setStartDatum(startDatum);
+    public void setBezeichnung(String bezeichnung) {
+        testlauf.setBezeichnung(bezeichnung);
     }
 
-    public LocalDateTime getEndDatum() {
-        return testlauf.getEndDatum();
+    public LocalDate getDatum() {
+        return testlauf.getDatum();
     }
 
-    public void setEndDatum(LocalDateTime endDatum) {
-        testlauf.setEndDatum(endDatum);
+    public void setDatum(LocalDate datum) {
+        testlauf.setDatum(datum);
     }
 }

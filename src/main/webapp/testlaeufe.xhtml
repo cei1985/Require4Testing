@@ -16,22 +16,18 @@
 
         <h:panelGrid columns="2">
 
-            <h:outputLabel for="startDatum" value="Startdatum:" />
-            <h:inputText id="startDatum"
-                         value="#{testlaufBean.startDatum}"
-                         required="true"
-                         a:type="datetime-local">
-                <f:convertDateTime type="localDateTime"
-                                   pattern="yyyy-MM-dd'T'HH:mm" />
-            </h:inputText>
+            <h:outputLabel for="bezeichnung" value="Bezeichnung:" />
+            <h:inputText id="bezeichnung"
+                         value="#{testlaufBean.bezeichnung}"
+                         required="true" />
 
-            <h:outputLabel for="endDatum" value="Enddatum:" />
-            <h:inputText id="endDatum"
-                         value="#{testlaufBean.endDatum}"
+            <h:outputLabel for="datum" value="Datum:" />
+            <h:inputText id="datum"
+                         value="#{testlaufBean.datum}"
                          required="true"
-                         a:type="datetime-local">
-                <f:convertDateTime type="localDateTime"
-                                   pattern="yyyy-MM-dd'T'HH:mm" />
+                         a:type="date">
+                <f:convertDateTime type="localDate"
+                                   pattern="yyyy-MM-dd" />
             </h:inputText>
 
         </h:panelGrid>
@@ -57,18 +53,15 @@
         </h:column>
 
         <h:column>
-            <f:facet name="header">Startdatum</f:facet>
-            <h:outputText value="#{testlauf.startDatum}">
-                <f:convertDateTime type="localDateTime"
-                                   pattern="dd.MM.yyyy HH:mm" />
-            </h:outputText>
+            <f:facet name="header">Bezeichnung</f:facet>
+            <h:outputText value="#{testlauf.bezeichnung}" />
         </h:column>
 
         <h:column>
-            <f:facet name="header">Enddatum</f:facet>
-            <h:outputText value="#{testlauf.endDatum}">
-                <f:convertDateTime type="localDateTime"
-                                   pattern="dd.MM.yyyy HH:mm" />
+            <f:facet name="header">Datum</f:facet>
+            <h:outputText value="#{testlauf.datum}">
+                <f:convertDateTime type="localDate"
+                                   pattern="dd.MM.yyyy" />
             </h:outputText>
         </h:column>
 
