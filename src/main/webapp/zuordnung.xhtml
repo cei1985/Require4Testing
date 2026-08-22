@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:f="jakarta.faces.core">
@@ -7,8 +8,9 @@
 
     <title>Require4Testing - Zuordnung</title>
 
-    <h:outputStylesheet library="css"
-                        name="require4testing.css" />
+    <h:outputStylesheet
+            library="css"
+            name="require4testing.css" />
 
 </h:head>
 
@@ -30,6 +32,7 @@
 
         </header>
 
+
         <!-- Navigation -->
 
         <nav class="navigation">
@@ -39,39 +42,53 @@
                 Start
             </a>
 
-            <h:link value="Anforderungen"
+            <h:link
+                    value="Anforderungen"
                     outcome="anforderungen"
                     styleClass="nav-link" />
 
-            <h:link value="Testfälle"
+            <h:link
+                    value="Testfälle"
                     outcome="testfaelle"
                     styleClass="nav-link" />
 
-            <h:link value="Testläufe"
+            <h:link
+                    value="Testläufe"
                     outcome="testlaeufe"
                     styleClass="nav-link" />
 
-            <h:link value="Zuordnung"
+            <h:link
+                    value="Zuordnung"
                     outcome="zuordnung"
                     styleClass="nav-link active" />
 
-            <h:link value="Testergebnisse"
+            <h:link
+                    value="Testergebnisse"
                     outcome="testergebnisse"
                     styleClass="nav-link" />
 
         </nav>
+
 
         <!-- Inhaltsbereich -->
 
         <main class="content">
 
             <h2 class="page-heading">
-                Testlauf zuordnen
+                Testlauf konfigurieren
             </h2>
+
+            <p>
+                Wählen Sie einen Testlauf aus und legen Sie fest,
+                welcher Tester die ausgewählten Testfälle durchführen soll.
+            </p>
+
 
             <h:form>
 
                 <div class="form-grid">
+
+                    <!-- Testlauf -->
 
                     <h:outputLabel
                             for="testlauf"
@@ -95,69 +112,175 @@
                                 itemValue="#{testlauf.id}"
                                 itemLabel="#{testlauf.bezeichnung}" />
 
+                        <f:ajax
+                                execute="@this"
+                                listener="#{testlaufBean.testlaufGewechselt}"
+                                render="tester testfallAuswahl" />
+
                     </h:selectOneMenu>
 
+
+                    <!-- Tester -->
+
                     <h:outputLabel
-                            for="tester"
+                            for="testerAuswahl"
                             value="Tester:"
                             styleClass="form-label" />
 
-                    <h:selectOneMenu
-                            id="tester"
-                            value="#{testlaufBean.ausgewaehlteTesterId}"
-                            required="true"
-                            styleClass="form-field">
+                    <h:panelGroup id="tester">
 
-                        <f:selectItem
-                                itemLabel="Tester auswählen"
-                                itemValue="#{null}"
-                                noSelectionOption="true" />
+                        <h:selectOneMenu
+                                id="testerAuswahl"
+                                value="#{testlaufBean.ausgewaehlteTesterId}"
+                                required="true"
+                                styleClass="form-field">
 
-                        <f:selectItems
-                                value="#{testlaufBean.tester}"
-                                var="tester"
-                                itemValue="#{tester.id}"
-                                itemLabel="#{tester.name}" />
+                            <f:selectItem
+                                    itemLabel="Tester auswählen"
+                                    itemValue="#{null}"
+                                    noSelectionOption="true" />
 
-                    </h:selectOneMenu>
+                            <f:selectItems
+                                    value="#{testlaufBean.tester}"
+                                    var="tester"
+                                    itemValue="#{tester.id}"
+                                    itemLabel="#{tester.name}" />
+
+                        </h:selectOneMenu>
+
+                    </h:panelGroup>
+
+
+                    <!-- Testfälle -->
 
                     <h:outputLabel
                             for="testfaelle"
                             value="Testfälle:"
                             styleClass="form-label" />
 
-                    <div class="checkbox-group">
+                    <h:panelGroup id="testfallAuswahl">
 
-                        <h:selectManyCheckbox
-                                id="testfaelle"
-                                value="#{testlaufBean.ausgewaehlteTestfallIds}"
-                                layout="pageDirection">
+                        <div class="checkbox-group">
 
-                            <f:selectItems
-                                    value="#{testlaufBean.testfaelle}"
-                                    var="testfall"
-                                    itemValue="#{testfall.id}"
-                                    itemLabel="#{testfall.titel}" />
+                            <h:selectManyCheckbox
+                                    id="testfaelle"
+                                    value="#{testlaufBean.ausgewaehlteTestfallIds}"
+                                    layout="pageDirection">
 
-                        </h:selectManyCheckbox>
+                                <f:selectItems
+                                        value="#{testlaufBean.testfaelle}"
+                                        var="testfall"
+                                        itemValue="#{testfall.id}"
+                                        itemLabel="#{testfall.titel}" />
 
-                    </div>
+                            </h:selectManyCheckbox>
+
+                        </div>
+
+                    </h:panelGroup>
 
                 </div>
 
+
                 <br />
+
 
                 <h:messages
                         styleClass="status" />
 
+
                 <br />
+
 
                 <h:commandButton
                         value="Zuordnung speichern"
-                        action="#{testlaufBean.speichern}"
+                        action="#{testlaufBean.zuordnen}"
                         styleClass="button" />
 
             </h:form>
+
+
+            <br />
+
+
+            <!-- Übersicht -->
+
+            <h2 class="page-heading">
+                Konfigurierte Testläufe
+            </h2>
+
+
+            <h:panelGroup id="konfigurationsUebersicht">
+
+                <h:dataTable
+                        value="#{testlaufBean.konfigurierteTestlaeufe}"
+                        var="testlauf"
+                        styleClass="data-table">
+
+                    <!-- Bezeichnung -->
+
+                    <h:column>
+
+                        <f:facet name="header">
+                            Bezeichnung
+                        </f:facet>
+
+                        <h:outputText
+                                value="#{testlauf.bezeichnung}" />
+
+                    </h:column>
+
+
+                    <!-- Geplanter Abschlusstermin -->
+
+                    <h:column>
+
+                        <f:facet name="header">
+                            Geplanter Abschlusstermin
+                        </f:facet>
+
+                        <h:outputText
+                                value="#{testlauf.datum}">
+
+                            <f:convertDateTime
+                                    type="localDate"
+                                    pattern="dd.MM.yyyy" />
+
+                        </h:outputText>
+
+                    </h:column>
+
+
+                    <!-- Tester -->
+
+                    <h:column>
+
+                        <f:facet name="header">
+                            Tester
+                        </f:facet>
+
+                        <h:outputText
+                                value="#{testlaufBean.testerNachTestlauf[testlauf.id]}" />
+
+                    </h:column>
+
+
+                    <!-- Zugeordnete Testfälle -->
+
+                    <h:column>
+
+                        <f:facet name="header">
+                            Zugeordnete Testfälle
+                        </f:facet>
+
+                        <h:outputText
+                                value="#{testlaufBean.testfaelleNachTestlauf[testlauf.id]}" />
+
+                    </h:column>
+
+                </h:dataTable>
+
+            </h:panelGroup>
 
         </main>
 

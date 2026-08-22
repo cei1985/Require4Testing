@@ -87,21 +87,30 @@
 
                     <h:outputLabel
                             for="datum"
-                            value="Datum:"
+                            value="Geplanter Abschlusstermin:"
                             styleClass="form-label" />
 
-                    <h:inputText
-                            id="datum"
-                            value="#{testlaufBean.testlauf.datum}"
-                            required="true"
-                            styleClass="form-field"
-                            a:type="date">
+                    <div>
 
-                        <f:convertDateTime
-                                type="localDate"
-                                pattern="yyyy-MM-dd" />
+                        <h:inputText
+                                id="datum"
+                                value="#{testlaufBean.testlauf.datum}"
+                                required="true"
+                                styleClass="form-field"
+                                a:type="date">
 
-                    </h:inputText>
+                            <f:convertDateTime
+                                    type="localDate"
+                                    pattern="yyyy-MM-dd" />
+
+                        </h:inputText>
+
+                        <div class="form-help">
+                            Der Testlauf soll bis zu diesem Termin
+                            abgeschlossen sein.
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -118,6 +127,58 @@
                         styleClass="button" />
 
             </h:form>
+
+            <br />
+
+            <h2 class="page-heading">
+                Angelegte Testläufe
+            </h2>
+
+            <h:dataTable
+                    value="#{testlaufBean.testlaeufe}"
+                    var="testlauf"
+                    styleClass="data-table">
+
+                <h:column>
+
+                    <f:facet name="header">
+                        ID
+                    </f:facet>
+
+                    <h:outputText
+                            value="#{testlauf.id}" />
+
+                </h:column>
+
+                <h:column>
+
+                    <f:facet name="header">
+                        Bezeichnung
+                    </f:facet>
+
+                    <h:outputText
+                            value="#{testlauf.bezeichnung}" />
+
+                </h:column>
+
+                <h:column>
+
+                    <f:facet name="header">
+                        Geplanter Abschlusstermin
+                    </f:facet>
+
+                    <h:outputText
+                            value="#{testlauf.datum}">
+
+                        <f:convertDateTime
+                                type="localDate"
+                                pattern="dd.MM.yyyy" />
+
+                    </h:outputText>
+
+                </h:column>
+
+            </h:dataTable>
 
         </main>
 

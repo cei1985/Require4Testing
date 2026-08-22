@@ -90,8 +90,9 @@
                                 itemLabel="#{anforderung.titel}" />
 
                         <f:ajax
-                                listener="#{testfallBean.ladeTestfaelle}"
-                                render="testfallTabelle" />
+                                execute="@this"
+                                listener="#{testfallBean.anforderungGewechselt}"
+                                render=":testfallTabelle" />
 
                     </h:selectOneMenu>
 
@@ -134,7 +135,7 @@
 
                     <f:ajax
                             execute="@form"
-                            render="@form testfallTabelle" />
+                            render="@form :testfallTabelle" />
 
                 </h:commandButton>
 

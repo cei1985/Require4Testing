@@ -8,6 +8,8 @@ import de.require4testing.dao.TestdurchfuehrungDAO;
 import de.require4testing.model.Testdurchfuehrung;
 import de.require4testing.model.Tester;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
@@ -31,6 +33,7 @@ public class TesterBean implements Serializable {
     }
 
     public void ladeTestdurchfuehrungen(AjaxBehaviorEvent event) {
+
         if (tester.getId() == null) {
             testdurchfuehrungen = new ArrayList<>();
             return;
@@ -41,14 +44,27 @@ public class TesterBean implements Serializable {
     }
 
     public void ergebnisSpeichern() {
-        for (Testdurchfuehrung testdurchfuehrung : testdurchfuehrungen) {
-            testdurchfuehrungDAO.aktualisieren(testdurchfuehrung);
+
+        for (Testdurchfuehrung testdurchfuehrung
+                : testdurchfuehrungen) {
+
+            testdurchfuehrungDAO.aktualisieren(
+                    testdurchfuehrung);
         }
 
         if (tester.getId() != null) {
+
             testdurchfuehrungen =
-                    testdurchfuehrungDAO.findeFuerTester(tester);
+                    testdurchfuehrungDAO.findeFuerTester(
+                            tester);
         }
+
+        FacesContext.getCurrentInstance().addMessage(
+                null,
+                new FacesMessage(
+                        FacesMessage.SEVERITY_INFO,
+                        "Testergebnisse erfolgreich gespeichert.",
+                        null));
     }
 
     public Tester getTester() {
@@ -65,6 +81,8 @@ public class TesterBean implements Serializable {
 
     public void setTestdurchfuehrungen(
             List<Testdurchfuehrung> testdurchfuehrungen) {
-        this.testdurchfuehrungen = testdurchfuehrungen;
+
+        this.testdurchfuehrungen =
+                testdurchfuehrungen;
     }
 }

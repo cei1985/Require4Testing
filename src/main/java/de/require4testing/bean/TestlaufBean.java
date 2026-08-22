@@ -2,7 +2,9 @@ package de.require4testing.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.require4testing.dao.TestdurchfuehrungDAO;
 import de.require4testing.dao.TesterDAO;
@@ -13,6 +15,9 @@ import de.require4testing.model.Tester;
 import de.require4testing.model.Testfall;
 import de.require4testing.model.Testlauf;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
@@ -25,40 +30,163 @@ public class TestlaufBean implements Serializable {
     private Testlauf testlauf;
 
     private List<Testlauf> testlaeufe;
+    private List<Testlauf> konfigurierteTestlaeufe;
+
     private List<Tester> tester;
     private List<Testfall> testfaelle;
 
     private Long ausgewaehlterTestlaufId;
     private Long ausgewaehlteTesterId;
+
     private List<Long> ausgewaehlteTestfallIds;
 
-    private final TestlaufDAO testlaufDAO = new TestlaufDAO();
-    private final TestfallDAO testfallDAO = new TestfallDAO();
-    private final TesterDAO testerDAO = new TesterDAO();
+    private Map<Long, String> testerNachTestlauf;
+    private Map<Long, String> testfaelleNachTestlauf;
+
+    private final TestlaufDAO testlaufDAO =
+            new TestlaufDAO();
+
+    private final TestfallDAO testfallDAO =
+            new TestfallDAO();
+
+    private final TesterDAO testerDAO =
+            new TesterDAO();
+
     private final TestdurchfuehrungDAO testdurchfuehrungDAO =
             new TestdurchfuehrungDAO();
 
     @PostConstruct
     public void init() {
+
         testlauf = new Testlauf();
 
         testlaeufe = testlaufDAO.findeAlle();
+
         tester = testerDAO.findeAlle();
+
         testfaelle = testfallDAO.findeAlle();
 
-        ausgewaehlteTestfallIds = new ArrayList<>();
+        ausgewaehlteTestfallIds =
+                new ArrayList<>();
+
+        testerNachTestlauf =
+                new HashMap<>();
+
+        testfaelleNachTestlauf =
+                new HashMap<>();
+
+        ladeKonfigurationsuebersicht();
     }
 
+    /**
+     * Legt einen neuen Testlauf an.
+     */
     public void speichern() {
 
+        testlaufDAO.speichern(testlauf);
+
+        FacesContext.getCurrentInstance().addMessage(
+                null,
+                new FacesMessage(
+                        FacesMessage.SEVERITY_INFO,
+                        "Testlauf erfolgreich gespeichert.",
+                        null));
+
+        testlauf = new Testlauf();
+
+        testlaeufe = testlaufDAO.findeAlle();
+
+        ladeKonfigurationsuebersicht();
+    }
+
+    /**
+     * Lädt die bestehende Konfiguration des ausgewählten Testlaufs.
+     */
+    public void testlaufGewechselt(
+            AjaxBehaviorEvent event) {
+
+        ausgewaehlteTestfallIds =
+                new ArrayList<>();
+
+        ausgewaehlteTesterId = null;
+
         if (ausgewaehlterTestlaufId == null) {
-            throw new IllegalStateException(
-                    "Kein Testlauf ausgewählt.");
+            return;
+        }
+
+        Testlauf ausgewaehlterTestlauf =
+                findeAusgewaehltenTestlauf();
+
+        if (ausgewaehlterTestlauf == null) {
+            return;
+        }
+
+        if (ausgewaehlterTestlauf.getTester() != null) {
+
+            ausgewaehlteTesterId =
+                    ausgewaehlterTestlauf
+                            .getTester()
+                            .getId();
+        }
+
+        List<Testdurchfuehrung> testdurchfuehrungen =
+                testdurchfuehrungDAO.findeFuerTestlauf(
+                        ausgewaehlterTestlaufId);
+
+        for (Testdurchfuehrung testdurchfuehrung
+                : testdurchfuehrungen) {
+
+            if (testdurchfuehrung.getTestfall() != null) {
+
+                ausgewaehlteTestfallIds.add(
+                        testdurchfuehrung
+                                .getTestfall()
+                                .getId());
+            }
+        }
+    }
+
+    /**
+     * Speichert die Zuordnung eines Testlaufs
+     * zu einem Tester und den ausgewählten Testfällen.
+     */
+    public void zuordnen() {
+
+        if (ausgewaehlterTestlaufId == null) {
+
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR,
+                            "Bitte wählen Sie einen Testlauf aus.",
+                            null));
+
+            return;
         }
 
         if (ausgewaehlteTesterId == null) {
-            throw new IllegalStateException(
-                    "Kein Tester ausgewählt.");
+
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR,
+                            "Bitte wählen Sie einen Tester aus.",
+                            null));
+
+            return;
+        }
+
+        if (ausgewaehlteTestfallIds == null
+                || ausgewaehlteTestfallIds.isEmpty()) {
+
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR,
+                            "Bitte wählen Sie mindestens einen Testfall aus.",
+                            null));
+
+            return;
         }
 
         Testlauf ausgewaehlterTestlauf =
@@ -68,48 +196,184 @@ public class TestlaufBean implements Serializable {
                 findeAusgewaehltenTester();
 
         if (ausgewaehlterTestlauf == null) {
-            throw new IllegalStateException(
-                    "Kein gültiger Testlauf ausgewählt.");
+
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR,
+                            "Der ausgewählte Testlauf konnte nicht gefunden werden.",
+                            null));
+
+            return;
         }
 
         if (ausgewaehlterTester == null) {
-            throw new IllegalStateException(
-                    "Kein gültiger Tester ausgewählt.");
+
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR,
+                            "Der ausgewählte Tester konnte nicht gefunden werden.",
+                            null));
+
+            return;
         }
 
-        ausgewaehlterTestlauf.setTester(ausgewaehlterTester);
+        ausgewaehlterTestlauf.setTester(
+                ausgewaehlterTester);
 
-        testlauf = ausgewaehlterTestlauf;
+        testlaufDAO.aktualisieren(
+                ausgewaehlterTestlauf);
 
-        for (Long testfallId : ausgewaehlteTestfallIds) {
+        for (Long testfallId
+                : ausgewaehlteTestfallIds) {
 
-            Testfall testfall = findeTestfall(testfallId);
+            Testfall testfall =
+                    findeTestfall(testfallId);
 
-            if (testfall != null) {
+            if (testfall != null
+                    && !istBereitsZugeordnet(
+                            ausgewaehlterTestlauf,
+                            testfall)) {
 
                 Testdurchfuehrung testdurchfuehrung =
                         new Testdurchfuehrung();
 
-                testdurchfuehrung.setTestlauf(ausgewaehlterTestlauf);
-                testdurchfuehrung.setTestfall(testfall);
-                testdurchfuehrung.setErgebnis("OFFEN");
+                testdurchfuehrung.setTestlauf(
+                        ausgewaehlterTestlauf);
+
+                testdurchfuehrung.setTestfall(
+                        testfall);
+
+                testdurchfuehrung.setErgebnis(
+                        "OFFEN");
 
                 testdurchfuehrungDAO.speichern(
                         testdurchfuehrung);
             }
         }
 
-        testlauf = new Testlauf();
-        ausgewaehlterTestlaufId = null;
-        ausgewaehlteTesterId = null;
-        ausgewaehlteTestfallIds = new ArrayList<>();
+        testlaeufe =
+                testlaufDAO.findeAlle();
 
-        testlaeufe = testlaufDAO.findeAlle();
+        ladeKonfigurationsuebersicht();
+
+        FacesContext.getCurrentInstance().addMessage(
+                null,
+                new FacesMessage(
+                        FacesMessage.SEVERITY_INFO,
+                        "Zuordnung erfolgreich gespeichert.",
+                        null));
+    }
+
+    /**
+     * Baut die Übersicht der bereits konfigurierten Testläufe auf.
+     */
+    private void ladeKonfigurationsuebersicht() {
+
+        konfigurierteTestlaeufe =
+                new ArrayList<>();
+
+        testerNachTestlauf =
+                new HashMap<>();
+
+        testfaelleNachTestlauf =
+                new HashMap<>();
+
+        if (testlaeufe == null) {
+            return;
+        }
+
+        for (Testlauf testlauf
+                : testlaeufe) {
+
+            if (testlauf.getTester() == null
+                    || testlauf.getId() == null) {
+
+                continue;
+            }
+
+            List<Testdurchfuehrung> testdurchfuehrungen =
+                    testdurchfuehrungDAO.findeFuerTestlauf(
+                            testlauf.getId());
+
+            if (testdurchfuehrungen.isEmpty()) {
+                continue;
+            }
+
+            konfigurierteTestlaeufe.add(
+                    testlauf);
+
+            testerNachTestlauf.put(
+                    testlauf.getId(),
+                    testlauf
+                            .getTester()
+                            .getName());
+
+            StringBuilder testfallNamen =
+                    new StringBuilder();
+
+            for (Testdurchfuehrung testdurchfuehrung
+                    : testdurchfuehrungen) {
+
+                if (testdurchfuehrung.getTestfall() == null) {
+                    continue;
+                }
+
+                if (testfallNamen.length() > 0) {
+                    testfallNamen.append(", ");
+                }
+
+                testfallNamen.append(
+                        testdurchfuehrung
+                                .getTestfall()
+                                .getTitel());
+            }
+
+            testfaelleNachTestlauf.put(
+                    testlauf.getId(),
+                    testfallNamen.toString());
+        }
+    }
+
+    /**
+     * Prüft, ob ein Testfall bereits einem Testlauf
+     * zugeordnet wurde.
+     */
+    private boolean istBereitsZugeordnet(
+            Testlauf testlauf,
+            Testfall testfall) {
+
+        List<Testdurchfuehrung> testdurchfuehrungen =
+                testdurchfuehrungDAO.findeFuerTestlauf(
+                        testlauf.getId());
+
+        for (Testdurchfuehrung testdurchfuehrung
+                : testdurchfuehrungen) {
+
+            if (testdurchfuehrung.getTestfall() != null
+                    && testfall.getId().equals(
+                            testdurchfuehrung
+                                    .getTestfall()
+                                    .getId())) {
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private Testlauf findeAusgewaehltenTestlauf() {
 
-        for (Testlauf eintrag : testlaeufe) {
+        if (ausgewaehlterTestlaufId == null
+                || testlaeufe == null) {
+
+            return null;
+        }
+
+        for (Testlauf eintrag
+                : testlaeufe) {
 
             if (ausgewaehlterTestlaufId.equals(
                     eintrag.getId())) {
@@ -123,7 +387,14 @@ public class TestlaufBean implements Serializable {
 
     private Tester findeAusgewaehltenTester() {
 
-        for (Tester eintrag : tester) {
+        if (ausgewaehlteTesterId == null
+                || tester == null) {
+
+            return null;
+        }
+
+        for (Tester eintrag
+                : tester) {
 
             if (ausgewaehlteTesterId.equals(
                     eintrag.getId())) {
@@ -135,11 +406,21 @@ public class TestlaufBean implements Serializable {
         return null;
     }
 
-    private Testfall findeTestfall(Long testfallId) {
+    private Testfall findeTestfall(
+            Long testfallId) {
 
-        for (Testfall testfall : testfaelle) {
+        if (testfallId == null
+                || testfaelle == null) {
 
-            if (testfallId.equals(testfall.getId())) {
+            return null;
+        }
+
+        for (Testfall testfall
+                : testfaelle) {
+
+            if (testfallId.equals(
+                    testfall.getId())) {
+
                 return testfall;
             }
         }
@@ -151,7 +432,8 @@ public class TestlaufBean implements Serializable {
         return testlauf;
     }
 
-    public void setTestlauf(Testlauf testlauf) {
+    public void setTestlauf(
+            Testlauf testlauf) {
         this.testlauf = testlauf;
     }
 
@@ -159,15 +441,21 @@ public class TestlaufBean implements Serializable {
         return testlaeufe;
     }
 
-    public void setTestlaeufe(List<Testlauf> testlaeufe) {
+    public void setTestlaeufe(
+            List<Testlauf> testlaeufe) {
         this.testlaeufe = testlaeufe;
+    }
+
+    public List<Testlauf> getKonfigurierteTestlaeufe() {
+        return konfigurierteTestlaeufe;
     }
 
     public List<Tester> getTester() {
         return tester;
     }
 
-    public void setTester(List<Tester> tester) {
+    public void setTester(
+            List<Tester> tester) {
         this.tester = tester;
     }
 
@@ -175,7 +463,8 @@ public class TestlaufBean implements Serializable {
         return testfaelle;
     }
 
-    public void setTestfaelle(List<Testfall> testfaelle) {
+    public void setTestfaelle(
+            List<Testfall> testfaelle) {
         this.testfaelle = testfaelle;
     }
 
@@ -210,5 +499,13 @@ public class TestlaufBean implements Serializable {
 
         this.ausgewaehlteTestfallIds =
                 ausgewaehlteTestfallIds;
+    }
+
+    public Map<Long, String> getTesterNachTestlauf() {
+        return testerNachTestlauf;
+    }
+
+    public Map<Long, String> getTestfaelleNachTestlauf() {
+        return testfaelleNachTestlauf;
     }
 }
